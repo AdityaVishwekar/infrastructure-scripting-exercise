@@ -1,14 +1,32 @@
 import requests
 from bs4 import BeautifulSoup
+from openpyxl import Workbook
 
 
 def main():
-    companies = ["JPM", "MSFT"]
-    print("Company Cash Debt")
+    # Create workbook
+    workbook = Workbook()
+    sheet = workbook.active
+    
+    # Add headers
+    sheet["A1"] = "COMPANY"
+    sheet["B1"] = "Total Cash"
+    sheet["C1"] = "Total Debt"
+    sheet["D1"] = "Ratio"
+
+    # List of companies
+    companies = ["JPM", "MSFT", "GOOGL"]
+    data = []
+    
     for company in companies:
         cash = getTotalCash(company)
         debt = getTotalDebt(company)
-        print(company+" "+cash+" "+debt)
+        data.append([company,cash,debt])
+        
+    # Add data to xlsx
+    for row in data:
+        sheet.append(row)
+    workbook.save(filename="Reports/test.xlsx")
 
 # Get url
 def setPage(stock):
@@ -23,6 +41,7 @@ def getTotalCash(stock):
     results = soup.find_all('td', class_='Fz(s) Fw(500) Ta(end) Pstart(10px) Miw(60px)')
     return results[51].text
 
+# Total debt of the company
 def getTotalDebt(stock):
     soup = setPage(stock)
     results = soup.find_all('td', class_='Fz(s) Fw(500) Ta(end) Pstart(10px) Miw(60px)')
