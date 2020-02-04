@@ -6,6 +6,14 @@ from datetime import date
 
 
 def main():
+
+    # List of companies
+    companiesUS = ["JPM", "MSFT", "GOOGL", "BAC", "TSLA", "FB", "V", "MA", "DIS", "QCOM", "AAPL", "SGEN", "NVDA"]
+    report_US = createDebtReport(companiesUS, "US")
+    companiesIND = ["DABUR.NS", "GLAXO.NS", "HDFCBANK.NS", "HINDUNILVR.NS", "INFY.NS", "RELIANCE.NS", "TATACOFFEE.NS", "TCS.NS", "TECHM.NS", "WIPRO.NS", "YESBANK.NS"]
+    report_IN = createDebtReport(companiesIND, "IN")
+
+def createDebtReport(companies, region):
     # Create workbook
     workbook = Workbook()
     sheet = workbook.active
@@ -16,8 +24,6 @@ def main():
     sheet["C1"] = "Total Debt"
     sheet["D1"] = "Ratio"
 
-    # List of companies
-    companies = ["JPM", "MSFT", "GOOGL", "BAC", "TSLA", "FB", "V", "MA", "DIS", "QCOM", "AAPL", "SGEN", "NVDA"]
     data = []
     
     for company in companies:
@@ -26,15 +32,16 @@ def main():
         ratio = calculateRatio(cash, debt)
         data.append([company,cash,debt,ratio])
     
+    print(data)
     # Sort the data based on ratio
     sortedData = sorted(data, key=lambda x: x[3], reverse=True)
         
     # Add data to xlsx
     for row in sortedData:
         sheet.append(row)
-    reportName = "Reports/DebtRatioReport"+str(date.today())+".xlsx"
-    workbook.save(filename=reportName)
-
+    reportName = "Reports/DebtRatioReport_"+region+"_"+str(date.today())+".xlsx"
+    workbook.save(filename=reportName)    
+    
 # Get url
 def setPage(stock):
     URL = "https://finance.yahoo.com/quote/"+stock+"/key-statistics?p="+stock
@@ -60,6 +67,12 @@ def calculateRatio(cash, debt):
         cash = float(cash[0:-1])
         debt = float(debt[0:-1])
         return cash/debt
+    elif ( ((cash[-1] == "B") and (debt[-1] == "M")) or ((cash[-1] == "T") and (debt[-1] == "B")) ):
+        cash = float(cash[0:-1])
+        debt = float(debt[0:-1])*0.001
+        return cash/debt
+    else:
+        return 0.0
 
 if __name__=='__main__':
     main()
