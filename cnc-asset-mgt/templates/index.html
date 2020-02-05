@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CNC Wealth Management</title>
+    <style>
+        table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          width: 100%;
+        }
+        
+        td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+          background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+    <h2>This is the Reports page</h2>
+    <table>
+    <tr>
+        <th>Company</th>
+        <th>Total Cash</th>
+        <th>Total Debt</th>
+        <th>Ratio</th>
+    </tr>
+    {% for result in results %}
+    <tr>
+        <td>{{result["COMPANY"]}}</td>
+        <td>{{result["Total Cash"]}}</td>
+        <td>{{result["Total Debt"]}}</td>
+        <td>{{result["Ratio"]}}</td>
+    </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>
