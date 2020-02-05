@@ -16,10 +16,19 @@ c = conn.cursor()
 
 @app.route('/')
 def index():
+    return render_template('index.html')
+
+@app.route('/reports1')
+def reportsIND():
+    results = sql_query(c, ''' SELECT * FROM report1 ''')
+    msg = 'SELECT * FROM report1'
+    return render_template('reportsIND.html', results=results, msg=msg)
+
+@app.route('/reports2')
+def reportsUS():
     results = sql_query(c, ''' SELECT * FROM report2 ''')
-    print(results)
     msg = 'SELECT * FROM report2'
-    return render_template('index.html', results=results, msg=msg)
+    return render_template('reportsUS.html', results=results, msg=msg)
 
 def main():
     global conn, c
